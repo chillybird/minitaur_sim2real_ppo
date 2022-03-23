@@ -58,34 +58,3 @@ class BulletEnv:
         env = wrappers.ConvertTo32Bit(env)
         return env
 
-
-class BulletMultiEnv(BulletEnv):
-
-    def _create_environment(self, env):
-        """Constructor for an instance of the environment.
-        Args:
-          config: Object providing configurations via attributes.
-
-        Returns:
-          Wrapped OpenAI Gym environment.
-        """
-        if self.max_length is not None:
-            print("Limit duration.")
-            env = wrappers.LimitDuration(env, self.max_length)
-        if self.random_max_steps is not None and self.args.random_start:
-            print(f"Random start with random start step {self.random_max_steps}.")
-            env = wrappers.RandomStart(env, self.random_max_steps)
-        # auto reset done env
-        env = wrappers.AutoReset(env)
-        env = wrappers.RangeNormalize(env)
-        env = wrappers.ClipAction(env)
-        # 将环境封装为多智能体环境
-        env = wrappers.ConvertToMultiEnv(env, **{
-            'env_name': self.args.env_name,
-            'use_signal_in_observation': self.args.use_signal_in_observation,
-            'use_angle_in_observation': self.args.use_angle_in_observation
-        })
-        env = wrappers.ConvertTo32Bit(env)
-        return env
-
-
