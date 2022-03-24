@@ -1,19 +1,10 @@
-"""
-使用PPO算法训练模型
-"""
 import os
-import warnings
-
-warnings.filterwarnings("ignore")
-
-import argparse
-
 from datetime import datetime
 import numpy as np
 import torch
 
 from agents.ppo.common import PPO
-from init import train_params, output_params_info, writer, checkpoint_path
+from init import train_params, output_params_info, train_init
 from envs import BulletEnv
 
 max_length = 1000
@@ -22,23 +13,19 @@ max_length = 1000
 def train():
     print("============================================================================================")
 
-    # 输出训练的超参数
-    output_params_info()
-    # 创建环境
-    env_args = {
-        'env_name': train_params.env_name,
-    }
-    env_args = argparse.Namespace(**env_args)
+    env_name = 'minitaur_trotting_env'
     env_build_args = {
         'render': True,
         'use_signal_in_observation': True,
         'use_angle_in_observation': True,
     }
-    env = BulletEnv(env_args).build_env(**env_build_args)
+    env = BulletEnv(env_name).build_env(**env_build_args)
+
+    output_params_info(env_name)
+    writer, checkpoint_path = train_init(env_name)
 
     # state space dimension
     state_dim = env.observation_space.shape[0]
-
     # action space dimension
     if train_params.has_continuous_action_space:
         action_dim = env.action_space.shape[0]
@@ -57,12 +44,7 @@ def train():
         env.seed(train_params.random_seed)
         np.random.seed(train_params.random_seed)
 
-    #####################################################
-
     print("============================================================================================")
-
-    ################# training procedure ################
-
     # initialize a PPO agent
     ppo_agent = PPO(state_dim, action_dim, train_params.lr_actor, train_params.lr_critic,
                     train_params.gamma, train_params.K_epochs, train_params.eps_clip,
@@ -75,8 +57,8 @@ def train():
     # track total training time
     start_time = datetime.now().replace(microsecond=0)
     print("Started training at (GMT) : ", start_time)
-
     print("============================================================================================")
+
     # printing and logging variables
     print_running_reward = 0
     print_running_episodes = 0

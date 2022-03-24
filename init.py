@@ -4,18 +4,14 @@
 import os
 from tools import Params
 
-
-# 将训练的超参数转换为对象的属性进行调用
 max_ep_len = 1000
 train_params = Params(from_dict=True, params={
 
-    # 'env_name': 'minitaur_reactive_env',
-    'env_name': 'minitaur_trotting_env',
     'has_continuous_action_space': True,  # continuous action space; else discrete
-    'open_writer': True,   # 是否使用 SummaryWriter
-    'loop_flag': True, # 是否停止启用最大训练时间步数
+    'open_writer': True,   # whether use SummaryWriter
+    'loop_flag': True,  # whether to disable the maximum number of training steps
 
-    'max_ep_len':max_ep_len,                   # max timesteps in one episode
+    'max_ep_len': max_ep_len,                   # max timesteps in one episode
     'max_training_timesteps': int(3e6),   # break training loop if timeteps > max_training_timesteps
 
     'print_freq': max_ep_len * 10,        # print avg reward in the interval (in num timesteps)
@@ -28,7 +24,7 @@ train_params = Params(from_dict=True, params={
     'min_action_std': 0.1,               # minimum action_std (stop decay after action_std <= min_action_std)
     'action_std_decay_freq': int(2.5e5),  # action_std decay frequency (in num timesteps)
 
-    ################ PPO hyperparameters ################
+    # PPO hyperparameters
     'update_timestep': max_ep_len * 4,      # update policy every n timesteps
     'K_epochs': 80,               # update policy for K epochs in one PPO update
 
@@ -42,13 +38,13 @@ train_params = Params(from_dict=True, params={
 })
 
 
-def output_params_info():
+def output_params_info(env_name):
     """
     print all hyperparameters
     :return:
     """
     print("--------------------------------------------------------------------------------------------")
-    print("training environment name : " + train_params.env_name)
+    print("training environment name : " + env_name)
     print("max training timesteps : ",  'infinity' if train_params.loop_flag else train_params.max_training_timesteps)
     print("max timesteps per episode : ", train_params.max_ep_len)
 
@@ -83,13 +79,13 @@ def output_params_info():
     print("optimizer learning rate critic : ", train_params.lr_critic)
 
 
-def train_init():
+def train_init(env_name):
     """
     获取log文件对象和checkpoint路径
     :return:
     """
     writer = None
-    ###################### logging ######################
+    # logging
     if train_params.open_writer:
 
         from tensorboardX import SummaryWriter
@@ -100,28 +96,23 @@ def train_init():
         current_num_files = next(os.walk(log_dir))[2]
         run_num = len(current_num_files)
 
-        #### create tensorboard SummaryWriter for each run
-        writer = SummaryWriter(comment='PPO_' + train_params.env_name + "_" + str(run_num))
+        # create tensorboard SummaryWriter for each run
+        writer = SummaryWriter(comment='PPO_' + env_name + "_" + str(run_num))
 
-        print("current logging run number for " + train_params.env_name + " : ", run_num)
-    #####################################################
+        print("current logging run number for " + env_name + " : ", run_num)
 
-    ################### checkpointing ###################
-    run_num_pretrained = 0      #### change this to prevent overwriting weights in same env_name folder
+    # checkpointing
+    run_num_pretrained = 0      # change this to prevent overwriting weights in same env_name folder
 
     directory = "saves"
     if not os.path.exists(directory):
           os.makedirs(directory)
 
-    directory = directory + '/' + train_params.env_name + '/'
+    directory = directory + '/' + env_name + '/'
     if not os.path.exists(directory):
           os.makedirs(directory)
 
-    checkpoint_path = directory + "PPO_{}_{}_{}.pth".format(train_params.env_name, train_params.random_seed, run_num_pretrained)
+    checkpoint_path = directory + "PPO_{}_{}_{}.pth".format(env_name, train_params.random_seed, run_num_pretrained)
     print("save checkpoint path : " + checkpoint_path)
-    #####################################################
 
     return writer, checkpoint_path
-
-
-writer, checkpoint_path = train_init()

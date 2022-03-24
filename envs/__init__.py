@@ -8,15 +8,14 @@ from envs import minitaur
 
 
 class BulletEnv:
-    # 加载指定的bullet环境
+    # load the specified bullet environment
     env_pakg = "envs.minitaur"
 
-    def __init__(self, args):
-        self.args = args
+    def __init__(self, env_name):
         self.config = {}
         self.max_length = None
-        self.env_name = args.env_name
-        self.env_class_name = "".join(list(map(lambda x: x.capitalize(), args.env_name.split("_"))))
+        self.env_name = env_name
+        self.env_class_name = "".join(list(map(lambda x: x.capitalize(), env_name.split("_"))))
 
     def build_env(self, **kwargs):
         env_module = importlib.import_module(name=f'.{self.env_name}', package=self.env_pakg)
