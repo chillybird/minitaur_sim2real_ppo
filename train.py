@@ -12,11 +12,11 @@ from envs import BulletEnv
 
 
 def train():
-    env_name = 'minitaur_trotting_env'
+    env_name = 'minitaur_reactive_env'
     env_build_args = {
         'render': True,
-        'use_signal_in_observation': True,
-        'use_angle_in_observation': True,
+        'use_signal_in_observation': False,
+        'use_angle_in_observation': False,
     }
     env = BulletEnv(env_name).build_env(**env_build_args)
 

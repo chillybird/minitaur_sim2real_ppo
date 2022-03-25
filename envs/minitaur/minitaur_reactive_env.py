@@ -51,6 +51,7 @@ class MinitaurReactiveEnv(minitaur_gym_env.MinitaurGymEnv):
                  render=False,
                  num_steps_to_log=1000,
                  accurate_motor_model_enabled=True,
+                 use_signal_in_observation=False,
                  use_angle_in_observation=True,
                  hard_reset=False,
                  env_randomizer=None,
