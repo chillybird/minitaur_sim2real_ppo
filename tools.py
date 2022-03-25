@@ -5,8 +5,6 @@ import yaml
 class Params:
 
     def __init__(self, file_name=None, from_dict=False, params=None):
-        # 从yaml文件中加载参数，并保存为对象的属性
-        # 实例变量
         if not file_name and not params:
             raise Exception("'file_name' or 'params' dict is needed to load params.")
         if not from_dict:

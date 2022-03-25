@@ -6,7 +6,6 @@ from tools import Params
 
 max_ep_len = 1000
 train_params = Params(from_dict=True, params={
-
     'has_continuous_action_space': True,  # continuous action space; else discrete
     'open_writer': True,   # whether use SummaryWriter
     'loop_flag': True,  # whether to disable the maximum number of training steps
@@ -19,7 +18,6 @@ train_params = Params(from_dict=True, params={
     'save_model_freq': int(1e5),          # save model frequency (in num timesteps)
 
     'action_std': 0.6,                    # starting std for action distribution (Multivariate Normal)
-    # 动作分布的方差越小，就表示策略越确定
     'action_std_decay_rate': 0.05,        # linearly decay action_std (action_std = action_std - action_std_decay_rate)
     'min_action_std': 0.1,               # minimum action_std (stop decay after action_std <= min_action_std)
     'action_std_decay_freq': int(2.5e5),  # action_std decay frequency (in num timesteps)
@@ -38,13 +36,16 @@ train_params = Params(from_dict=True, params={
 })
 
 
-def output_params_info(env_name):
+def output_params_info(env_name, state_dim, action_dim):
     """
     print all hyperparameters
     :return:
     """
     print("--------------------------------------------------------------------------------------------")
     print("training environment name : " + env_name)
+    print("state space dimension : ", state_dim)
+    print("action space dimension : ", action_dim)
+
     print("max training timesteps : ",  'infinity' if train_params.loop_flag else train_params.max_training_timesteps)
     print("max timesteps per episode : ", train_params.max_ep_len)
 

@@ -1,3 +1,6 @@
+"""
+使用PPO算法训练模型
+"""
 import os
 from datetime import datetime
 import numpy as np
@@ -7,12 +10,8 @@ from agents.ppo.common import PPO
 from init import train_params, output_params_info, train_init
 from envs import BulletEnv
 
-max_length = 1000
-
 
 def train():
-    print("============================================================================================")
-
     env_name = 'minitaur_trotting_env'
     env_build_args = {
         'render': True,
@@ -21,7 +20,6 @@ def train():
     }
     env = BulletEnv(env_name).build_env(**env_build_args)
 
-    output_params_info(env_name)
     writer, checkpoint_path = train_init(env_name)
 
     # state space dimension
@@ -32,10 +30,7 @@ def train():
     else:
         action_dim = env.action_space.n
 
-    print("state space dimension : ", state_dim)
-    print("action space dimension : ", action_dim)
-
-    print("--------------------------------------------------------------------------------------------")
+    output_params_info(env_name, state_dim, action_dim)
 
     if train_params.random_seed:
         print("--------------------------------------------------------------------------------------------")

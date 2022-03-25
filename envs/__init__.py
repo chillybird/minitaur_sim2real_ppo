@@ -29,7 +29,7 @@ class BulletEnv:
 
     def load_params_from_yaml(self):
         """
-        从yaml配置文件加载环境的参数
+        load the environment's parameters from the YAML configuration file
         :param env_name_name:
         :return:
         """
