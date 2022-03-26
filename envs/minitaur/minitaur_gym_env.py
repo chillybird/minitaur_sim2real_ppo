@@ -469,7 +469,7 @@ class MinitaurGymEnv(gym.Env):
 
         roll, pitch, _ = self.minitaur.GetTrueBaseRollPitchYaw()
         if math.fabs(pitch) > 0.12:
-            forward_reward = -forward_reward
+            forward_reward = -math.fabs(forward_reward)
 
         objectives = [forward_reward, energy_reward, drift_reward, shake_reward]
         weighted_objectives = [o * w for o, w in zip(objectives, self._objective_weights)]

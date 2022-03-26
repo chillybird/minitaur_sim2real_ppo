@@ -4,9 +4,7 @@ import torch
 from agents.ppo.model import ActorCritic
 from envs import BulletEnv
 
-import argparse
-
-env_name = "minitaur_trotting_env"
+env_name = "minitaur_reactive_env"
 device = torch.device('cpu')
 # 是否是连续的动作空间
 has_continuous_action_space = True
@@ -17,16 +15,12 @@ directory = "saves" + '/' + env_name + '/'
 checkpoint_path = directory + "PPO_{}_{}_{}.pth".format(env_name, random_seed, run_num_pretrained)
 print("loading network from : " + checkpoint_path)
 
-env_args = {
-    'env_name': env_name,
-}
-env_args = argparse.Namespace(**env_args)
 env_build_args = {
     'render': True,
     'use_signal_in_observation': True,
     'use_angle_in_observation': True,
 }
-env = BulletEnv(env_args).build_env(**env_build_args)
+env = BulletEnv(env_name).build_env(**env_build_args)
 # state space dimension
 state_dim = env.observation_space.shape[0]
 
